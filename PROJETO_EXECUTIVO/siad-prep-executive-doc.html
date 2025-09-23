@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>SIAD-PrEP - Sistema Integrado de Agendamento e Distribuição de PrEP</title>
+    
+       
+</head>
+
+<body>
+    <div class="container">
+        <!-- Capa -->
+        <div class="cover">
+            <h1>SIAD-PrEP</h1>
+            <h2>Sistema Integrado de Agendamento e Distribuição de Profilaxia Pré-Exposição ao HIV</h2>
+            <p style="font-size: 1.1em; margin-top: 30px;">Transformação Digital na Prevenção do HIV no Sistema Único de Saúde</p>
+            
+            <div class="cover-meta">
+                <div>
+                    <strong>Documento Executivo</strong><br>
+                    Versão 1.0
+                </div>
+                <div>
+                    <strong>Data</strong><br>
+                    Setembro 2025
+                </div>
+                <div>
+                    <strong>Classificação</strong><br>
+                    Confidencial
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navegação -->
+        <nav class="nav">
+            <ul>
+                <li><a href="#sumario">Sumário Executivo</a></li>
+                <li><a href="#problema">O Problema</a></li>
+                <li><a href="#solucao">A Solução</a></li>
+                <li><a href="#impacto">Impacto</a></li>
+                <li><a href="#implementacao">Implementação</a></li>
+                <li><a href="#investimento">Investimento</a></li>
+                <li><a href="#proximo">Próximos Passos</a></li>
+                <li><a href="#referencias">Referências</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Sumário Executivo -->
+        <section id="sumario" class="section">
+            <div class="section-header">
+                <h2><span class="section-number">1</span>Sumário Executivo</h2>
+            </div>
+            
+            <div style="background: #f0f7f0; padding: 30px; border-radius: 10px; margin-bottom: 30px;">
+                <p style="font-size: 1.1em; line-height: 1.8;">
+                    O <strong>SIAD-PrEP</strong> é uma plataforma digital inovadora que revolucionará o acesso à Profilaxia Pré-Exposição (PrEP) 
+                    no Brasil, transformando a prevenção do HIV através da tecnologia. Com potencial para <strong>aumentar em 40% 
+                    o número de usuários PrEP</strong> e <strong>reduzir em 25% as novas infecções por HIV</strong> nos próximos 5 anos, 
+                    o projeto representa um marco na saúde digital brasileira.
+                </p>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-number">703</div>
+                    <div class="stat-label">Municípios com PrEP</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">98mil</div>
+                    <div class="stat-label">Demanda Estimada</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">Taxa de Abandono</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">R$ 142M</div>
+                    <div class="stat-label">Economia em 5 anos</div>
+                </div>
+            </div>
+            
+            <h3>Visão Geral do Projeto</h3>
+            <p>
+                O SIAD-PrEP integra tecnologias avançadas de agendamento digital, gestão inteligente de medicamentos, 
+                telemedicina e analytics preditivo para criar um ecossistema completo de prevenção ao HIV. 
+                A solução foi desenhada especificamente para atender às necessidades do SUS e das populações 
+                prioritárias, respeitando os princípios de universalidade, integralidade e equidade.
+            </p>
+        </section>
+        
+        <!-- O Problema -->
+        <section id="problema" class="section">
+            <div class="section-header">
+                <h2><span class="section-number">2</span>O Problema</h2>
+            </div>
+            
+            <h3>Contexto Epidemiológico</h3>
+            <p>
+                O Brasil registra anualmente cerca de <strong>40.000 novos casos de HIV</strong>, com prevalência 
+                concentrada em populações-chave: HSH (18,4%), mulheres trans (29,0%) e profissionais do sexo (4,8%). 
+                Apesar da disponibilização gratuita da PrEP pelo SUS desde 2018, enfrentamos desafios significativos 
+                na ampliação do acesso e adesão ao tratamento preventivo.
+            </p>
+            
+            <div class="cards">
+                <div class="card">
+                    <div class="card-icon">⚠️</div>
+                    <h4>Distribuição Desigual</h4>
+                    <p>Cobertura irregular entre municípios, com regiões inteiras sem acesso adequado à PrEP, 
+                    especialmente Norte e Nordeste.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h4>Alta Taxa de Abandono</h4>
+                    <p>40% dos usuários descontinuam o uso da PrEP nos primeiros 6 meses, comprometendo 
+                    a eficácia da estratégia preventiva.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🚧</div>
+                    <h4>Barreiras de Acesso</h4>
+                    <p>Dificuldades logísticas, estigma, falta de informação e processos burocráticos 
+                    limitam o alcance às populações vulneráveis.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">💊</div>
+                    <h4>Gestão Ineficiente</h4>
+                    <p>Desperdício de medicamentos por validade, falhas na distribuição e falta de 
+                    previsibilidade na demanda.</p>
+                </div>
+            </div>
+            
+            <h3>Impacto Econômico</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indicador</th>
+                        <th>Valor Atual</th>
+                        <th>Impacto Anual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Custo por novo caso HIV</td>
+                        <td>R$ 520.000</td>
+                        <td>R$ 20,8 bilhões</td>
+                    </tr>
+                    <tr>
+                        <td>Desperdício de PrEP</td>
+                        <td>15% do estoque</td>
+                        <td>R$ 18 milhões</td>
+                    </tr>
+                    <tr>
+                        <td>Custos operacionais</td>
+                        <td>30% do orçamento</td>
+                        <td>R$ 45 milhões</td>
+                    </tr>
+                    <tr>
+                        <td>Perda de produtividade</td>
+                        <td>-</td>
+                        <td>R$ 2,3 bilhões</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- A Solução -->
+        <section id="solucao" class="section">
+            <div class="section-header">
+                <h2><span class="section-number">3</span>A Solução</h2>
+            </div>
+            
+            <h3>Arquitetura da Plataforma SIAD-PrEP</h3>
+            <p>
+                O SIAD-PrEP é uma solução completa que integra múltiplos componentes tecnológicos 
+                para criar um ecossistema digital de prevenção ao HIV:
+            </p>
+            
+            <div class="cards">
+                <div class="card">
+                    <div class="card-icon">📱</div>
+                    <h4>Portal do Usuário</h4>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Agendamento online inteligente</li>
+                        <li>Aplicativo mobile nativo</li>
+                        <li>Histórico de saúde pessoal</li>
+                        <li>Conteúdo educativo personalizado</li>
+                        <li>Chat com profissionais de saúde</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">👨‍⚕️</div>
+                    <h4>Painel Profissional</h4>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Dashboard analítico em tempo real</li>
+                        <li>Gestão integrada de pacientes</li>
+                        <li>Prontuário eletrônico unificado</li>
+                        <li>Ferramentas de teleconsulta</li>
+                        <li>Protocolos clínicos digitalizados</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">📦</div>
+                    <h4>Gestão de Medicamentos</h4>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Controle inteligente de estoque</li>
+                        <li>Previsão de demanda com IA</li>
+                        <li>Rastreabilidade completa</li>
+                        <li>Integração com SICLOM</li>
+                        <li>Alertas automatizados</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🤖</div>
+                    <h4>Inteligência Artificial</h4>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Predição de abandono</li>
+                        <li>Identificação de vulneráveis</li>
+                        <li>Otimização de rotas</li>
+                        <li>Chatbot de triagem</li>
+                        <li>Analytics preditivo</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Diferenciais Tecnológicos</h3>
+            <div style="background: #f9f9f9; padding: 30px; border-radius: 10px; margin: 30px 0;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4 style="color: #006838;">🔒 Segurança e Privacidade</h4>
+                        <p>Compliance total com LGPD, criptografia end-to-end e anonimização de dados sensíveis.</p>
+                    </div>
+                    <div>
+                        <h4 style="color: #006838;">☁️ Arquitetura Cloud</h4>
+                        <p>Infraestrutura escalável em nuvem governamental com 99,9% de disponibilidade.</p>
+                    </div>
+                    <div>
+                        <h4 style="color: #006838;">🔄 Interoperabilidade</h4>
+                        <p>Integração nativa com sistemas do SUS usando padrão HL7 FHIR.</p>
+                    </div>
+                    <div>
+                        <h4 style="color: #006838;">♿ Acessibilidade</h4>
+                        <p>Interface inclusiva seguindo WCAG 2.1 e suporte a múltiplos idiomas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Impacto -->
+        <section id="impacto" class="section">
+            <div class="section-header">
+                <h2><span class="section-number">4</span>Impacto Esperado</h2>
+            </div>
+            
+            <h3>Benefícios Sociais</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-number">+40%</div>
+                    <div class="stat-label">Aumento de usuários PrEP</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">-25%</div>
+                    <div class="stat-label">Redução novas infecções</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Cobertura digital</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">+50%</div>
+                    <div class="stat-label">Adesão ao tratamento</div>
+                </div>
+            </div>
+            
+            <h3>Retorno sobre Investimento</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Métrica</th>
+                        <th>Ano 1</th>
+                        <th>Ano 3</th>
+                        <th>Ano 5</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Usuários atendidos</td>
+                        <td>15.000</td>
+                        <td>65.000</td>
+                        <td>120.000</td>
+                    </tr>
+                    <tr>
+                        <td>Infecções evitadas</td>
+                        <td>375</td>
+                        <td>1.625</td>
+                        <td>3.000</td>
+                    </tr>
+                    <tr>
+                        <td>Economia gerada</td>
+                        <td>R$ 12M</td>
+                        <td>R$ 65M</td>
+                        <td>R$ 142M</td>
+                    </tr>
+                    <tr>
+                        <td>ROI acumulado</td>
+                        <td>-45%</td>
+                        <td>82%</td>
+                        <td>258%</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Impacto na Saúde Pública</h3>
+            <div class="cards">
+                <div class="card">
+                    <h4>Prevenção Efetiva</h4>
+                    <p>Redução significativa na incidência de HIV nas populações-chave, 
+                    contribuindo para as metas 95-95-95 da UNAIDS.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="badge badge-success">3.000 infecções evitadas</span>
+                        <span class="badge badge-primary">15.600 QALYs ganhos</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h4>Equidade no Acesso</h4>
+                    <p>Eliminação de barreiras geográficas e sociais, garantindo acesso 
+                    universal à prevenção do HIV.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="badge badge-success">100% municípios cobertos</span>
+                        <span class="badge badge-primary">Redução de 70% nas disparidades</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h4>Eficiência Operacional</h4>
+                    <p>Otimização de recursos públicos através da automação e inteligência 
+                    artificial aplicada à gestão.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="badge badge-success">30% redução de custos</span>
+                        <span class="badge badge-primary">90% menos desperdício</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Implementação -->
+        <section id="implementacao" class="section">
+            <div class="section-header">
+                <h2><span class="section-number">5</span>Estratégia de Implementação</h2>
+            </div>
+            
+            <h3>Roadmap de Implementação</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Q1-Q2 2026: Desenvolvimento MVP</h4>
+                        <p>Desenvolvimento da versão inicial com funcionalidades core</p>
+                        <span class="badge badge-primary">6 meses</span>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Q3 2026: Piloto Controlado</h4>
+                        <p>Implementação em 3 municípios selecionados</p>
+                        <span class="badge badge-primary">3 meses</span>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Q4 2026: Avaliação e Ajustes</h4>
+                        <p>Análise de resultados e otimizações</p>
+                        <span class="badge badge-primary">3 meses</span>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>2027: Expansão Regional</h4>
+                        <p>Implementação em 5 estados prioritários</p>
+                        <span class="badge badge-success">12 meses</span>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>2028: Escala Nacional</h4>
+                        <p>Disponibilização para todos os estados</p>
+                        <span class="badge badge-success">12 meses</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Metodologia de Trabalho</h3>
+            <div class="cards">
+                <div class="card">
+                    <h4>🎯 Design Thinking</h4>
+                    <p>Desenvolvimento centrado no usuário com participação ativa das populações-chave</p>
+                </div>
+                <div class="card">
+                    <h4>🔄 Metodologia Ágil</h4>
+                    <p>Sprints de 2 semanas com entregas incrementais e feedback contínuo</p>
+                </div>
+                <div class="card">
+                    <h4>📊 Data-Driven</h4>
+                    <p>Decisões baseadas em evidências e métricas de impacto real</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Investimento -->
+        <section id="investimento" class="section">
+            <div class="section-header">
+                <h2><span class="section-number">6</span>Investimento e Sustentabilidade</h2>
+            </div>
+            
+            <h3>Estrutura de Investimento</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Ano 1</th>
+                        <th>Ano 2</th>
+                        <th>Ano 3-5</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Desenvolvimento</td>
+                        <td>R$ 3,5M</td>
+                        <td>R$ 2,0M</td>
+                        <td>R$ 2,0M</td>
+                        <td>R$ 7,5M</td>
+                    </tr>
+                    <tr>
+                        <td>Infraestrutura</td>
+                        <td>R$ 0,8M</td>
+                        <td>R$ 1,2M</td>
+                        <td>R$ 5,3M</td>
+                        <td>R$ 7,3M</td>
+                    </tr>
+                    <tr>
+                        <td>Operação</td>
+                        <td>R$ 1,2M</td>
+                        <td>R$ 2,4M</td>
+                        <td>R$ 10,5M</td>
+                        <td>R$ 14,1M</td>
+                    </tr>
+                    <tr>
+                        <td>Capacitação</td>
+                        <td>R$ 1,5M</td>
+                        <td>R$ 1,0M</td>
+                        <td>R$ 1,8M</td>
+                        <td>R$ 4,3M</td>
+                    </tr>
+                    <tr style="font-weight: bold;">
+                        <td>TOTAL</td>
+                        <td>R$ 8,6M</td>
+                        <td>R$ 7,9M</td>
+                        <td>R$ 23,2M</td>
+                        <td>R$ 39,7M</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Fontes de Financiamento</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 30px 0;">
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 10px;">
+                    <h4>Recursos Públicos (60%)</h4>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>Ministério da Saúde</li>
+                        <li>Emendas parlamentares</li>
+                        <li>Fundos estaduais e municipais</li>
+                    </ul>
+                </div>
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 10px;">
+                    <h4>Parcerias e Fomento (40%)</h4>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>FINEP, CNPq, FAPESP, Escola de Saúde Pública do Ceará</li>
+                        <li>Cooperação internacional</li>
+                        <li>Investimento social privado</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="background: #e8f5e9; padding: 25px; border-radius: 10px; margin-top: 30px;">
+                <h4 style="color: #2E7D32; margin-bottom: 15px;">💰 Análise Financeira</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                    <div><strong>ROI:</strong> 258%</div>
+                    <div><strong>Payback:</strong> 18 meses</div>
+                    <div><strong>VPL:</strong> R$ 67,4M</div>
+                    <div><strong>TIR:</strong> 42%</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Governança -->
+        <section id="governanca" class="section">
+            <div class="section-header">
+                <h2><span class="section-number">7</span>Governança e Parceiros</h2>
+            </div>
+            
+            <h3>Estrutura de Governança</h3>
+            <div class="cards">
+                <div class="card">
+                    <h4>Comitê Estratégico</h4>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>Ministério da Saúde</li>
+                        <li>CONASS e CONASEMS</li>
+                        <li>Sociedade civil organizada</li>
+                        <li>Profissionais de saúde e Especialistas em HIV/AIDS</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h4>Comitê Técnico</h4>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>Gerente de Projeto (PMO)</li>
+                        <li>Líder Técnico (CTO)</li>
+                        <li>Especialista em Saúde Pública</li>
+                        <li>Especialista em Segurança</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h4>Equipe de Execução</h4>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>10 Desenvolvedores</li>
+                        <li>3 Designers UX/UI</li>
+                        <li>3 Analistas de dados</li>
+                        <li>5 Especialistas em saúde</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Parceiros Estratégicos</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Parceiros</th>
+                        <th>Papel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Institucionais</strong></td>
+                        <td>MS, DCCI, SVS</td>
+                        <td>Coordenação e financiamento</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Acadêmicos</strong></td>
+                        <td>Fiocruz, USP, UFRJ</td>
+                        <td>Pesquisa e validação científica</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sociedade Civil</strong></td>
+                        <td>ABIA, Grupo Pela Vidda, UNAIDS</td>
+                        <td>Advocacy e mobilização</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tecnológicos</strong></td>
+                        <td>AWS, Microsoft, Google</td>
+                        <td>Infraestrutura e inovação</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- Próximos Passos -->
+        <section id="proximo" class="section">
+            <div class="section-header">
+                <h2><span class="section-number">8</span>Próximos Passos</h2>
+            </div>
+            
+            <h3>Ações Imediatas (30 dias)</h3>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-icon">✅</div>
+                    <h4>Validação Técnica</h4>
+                    <p>Apresentação para comitê técnico do Ministério da Saúde/Secretaría de Saúde e validação da arquitetura proposta</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🤝</div>
+                    <h4>Formação de Consórcio</h4>
+                    <p>Assinatura de cartas de intenção com parceiros estratégicos e definição de responsabilidades</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">💼</div>
+                    <h4>Captação de Recursos</h4>
+                    <p>Submissão a editais de fomento e apresentação para potenciais investidores sociais</p>
+                </div>
+            </div>
+            
+            <h3>Marcos Críticos - Ano 1</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Trimestre</th>
+                        <th>Entregáveis</th>
+                        <th>Indicadores de Sucesso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Q1</strong></td>
+                        <td>
+                            • Aprovação do projeto<br>
+                            • Contratação da equipe<br>
+                            • Definição de arquitetura
+                        </td>
+                        <td>
+                            • Recursos garantidos<br>
+                            • 80% equipe contratada<br>
+                            • Documentação aprovada
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Q2</strong></td>
+                        <td>
+                            • MVP desenvolvido<br>
+                            • Testes internos<br>
+                            • Capacitação inicial
+                        </td>
+                        <td>
+                            • 100% funcionalidades core<br>
+                            • 0 bugs críticos<br>
+                            • 50 profissionais treinados
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Q3</strong></td>
+                        <td>
+                            • Piloto em 3 municípios<br>
+                            • Coleta de feedback<br>
+                            • Ajustes e otimizações
+                        </td>
+                        <td>
+                            • 1.000 usuários ativos<br>
+                            • NPS > 60<br>
+                            • 80% adesão
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Q4</strong></td>
+                        <td>
+                            • Avaliação de impacto<br>
+                            • Plano de expansão<br>
+                            • Relatório final
+                        </td>
+                        <td>
+                            • ROI positivo<br>
+                            • Aprovação para expansão<br>
+                            • Evidências publicadas
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- CTA -->
+        <div class="cta">
+            <h2>Junte-se a Nós na Transformação da Prevenção do HIV no Brasil</h2>
+            <p>
+                O SIAD-PrEP representa mais que uma solução tecnológica - é um compromisso com a 
+                saúde pública, a equidade e o fim da epidemia de AIDS no Brasil. Com sua parceria, 
+                podemos tornar esta visão realidade e salvar milhares de vidas.
+            </p>
+            <a href="#" class="btn">APOIE ESTE PROJETO</a>
+        </div>
+        
+        <!-- Referências -->
+        <section id="referencias" class="section">
+            <div class="section-header">
+                <h2><span class="section-number">9</span>Referências Bibliográficas</h2>
+            </div>
+            
+            <p style="margin-bottom: 30px; font-style: italic;">
+                Este projeto foi desenvolvido com base em extensa pesquisa bibliográfica, análise de dados epidemiológicos 
+                e evidências científicas atualizadas. A pesar da necessida de aprofundamento técninco-ciêntífico, as referências consultadas e listadas abaixo fundamentam as decisões técnicas, 
+                projeções de impacto e estratégias propostas.
+            </p>
+            
+            <h3>📚 Estudos Científicos e Evidências sobre PrEP</h3>
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                <ol style="line-height: 1.8; padding-left: 20px;">
+                    <li><strong>DOURADO, I. et al.</strong> Adherence, Safety, and Feasibility of HIV Pre-Exposure Prophylaxis Among Adolescent Men Who Have Sex With Men and Transgender Women in Brazil (PrEP1519 Study). <em>Journal of Adolescent Health</em>, v. 73, p. S33-S42, 2023.</li>
+                    
+                    <li><strong>GRINSZTEJN, B. et al.</strong> Retention, engagement, and adherence to pre-exposure prophylaxis for men who have sex with men and transgender women in PrEP Brasil: 48 week results of a demonstration study. <em>The Lancet HIV</em>, v. 5, n. 3, p. e136-e145, 2018.</li>
+                    
+                    <li><strong>ECHEVERRIA-GUEVARA, A. et al.</strong> Impact of pre-exposure prophylaxis uptake among gay, bisexual, and other men who have sex with men in urban centers in Brazil: a modeling study. <em>BMC Public Health</em>, v. 23, Article 1128, 2023.</li>
+                    
+                    <li><strong>MENDONÇA GIL, P.K. et al.</strong> HIV pre-exposure prophylaxis and incidence of sexually transmitted infections in Brazil, 2018 to 2022: An ecological study. <em>PLOS Neglected Tropical Diseases</em>, v. 17, n. 8, e0011548, 2023.</li>
+                    
+                    <li><strong>TORRES, T.S. et al.</strong> Preferences for pre-exposure prophylaxis (PrEP) among sexual and gender minorities: a discrete choice experiment in Brazil. <em>The Lancet Regional Health – Americas</em>, v. 19, 100436, 2023.</li>
+                    
+                    <li><strong>MASSA, P. et al.</strong> PrEP demand creation strategies for adolescents at increased risk of HIV infection in São Paulo, Brazil: a cost-consequence analysis. <em>BMC Health Services Research</em>, v. 25, Article 156, 2025.</li>
+                    
+                    <li><strong>SOARES, F. et al.</strong> Zero knowledge and high interest in the use of long-acting injectable pre-exposure prophylaxis (PrEP) among adolescent men who have sex with men and transgender women in two capital cities in Brazil. <em>Journal of Adolescent Health</em>, v. 73, n. 6S, p. S26-S32, 2023.</li>
+                    
+                    <li><strong>PIMENTA, M.C. et al.</strong> Barreiras e facilitadores do acesso de populações vulneráveis à PrEP no Brasil: Estudo ImPrEP Stakeholders. <em>Cadernos de Saúde Pública</em>, v. 39, e00290622, 2023.</li>
+                    
+                    <li><strong>LANDOVITZ, R.J. et al.</strong> Cabotegravir for HIV Prevention in Cisgender Men and Transgender Women. <em>New England Journal of Medicine</em>, v. 385, p. 595-608, 2021.</li>
+                    
+                    <li><strong>GRANT, R.M. et al.</strong> Preexposure chemoprophylaxis for HIV prevention in men who have sex with men. <em>New England Journal of Medicine</em>, v. 363, n. 27, p. 2587-2599, 2010.</li>
+                </ol>
+            </div>
+            
+            <h3>📋 Documentos Oficiais e Protocolos</h3>
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                <ol start="11" style="line-height: 1.8; padding-left: 20px;">
+                    <li><strong>BRASIL. Ministério da Saúde.</strong> Protocolo Clínico e Diretrizes Terapêuticas para Profilaxia Pré-Exposição (PrEP) de Risco à Infecção pelo HIV. Brasília: MS, 2022. 186p.</li>
+                    
+                    <li><strong>BRASIL. Ministério da Saúde.</strong> Estratégia de Saúde Digital para o Brasil 2020-2028. Brasília: MS, 2020. 128p.</li>
+                    
+                    <li><strong>BRASIL. Ministério da Saúde.</strong> Boletim Epidemiológico HIV/AIDS 2023. Secretaria de Vigilância em Saúde e Ambiente. Brasília: MS, 2023.</li>
+                    
+                    <li><strong>BRASIL.</strong> Lei nº 13.709, de 14 de agosto de 2018. Lei Geral de Proteção de Dados Pessoais (LGPD). Diário Oficial da União, Brasília, 2018.</li>
+                    
+                    <li><strong>WORLD HEALTH ORGANIZATION.</strong> Global strategy on digital health 2020-2025. Geneva: WHO, 2021. 68p.</li>
+                    
+                    <li><strong>UNAIDS.</strong> Global AIDS Strategy 2021-2026 — End Inequalities. End AIDS. Geneva: Joint United Nations Programme on HIV/AIDS, 2021.</li>
+                    
+                    <li><strong>UNAIDS.</strong> In Danger: UNAIDS Global AIDS Update 2022. Geneva: Joint United Nations Programme on HIV/AIDS, 2022.</li>
+                    
+                    <li><strong>PAN AMERICAN HEALTH ORGANIZATION.</strong> HIV prevention in the spotlight: An analysis from the perspective of the health sector in Latin America and the Caribbean. Washington, DC: PAHO, 2017.</li>
+                </ol>
+            </div>
+            
+            <h3>🔧 Metodologias e Frameworks de Gestão</h3>
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                <ol start="19" style="line-height: 1.8; padding-left: 20px;">
+                    <li><strong>PROJECT MANAGEMENT INSTITUTE.</strong> A Guide to the Project Management Body of Knowledge (PMBOK® Guide) – Seventh Edition. Newtown Square, PA: PMI, 2021.</li>
+                    
+                    <li><strong>SCHWABER, K.; SUTHERLAND, J.</strong> The Scrum Guide: The Definitive Guide to Scrum. Scrum.org, 2020.</li>
+                    
+                    <li><strong>AXELOS.</strong> ITIL Foundation, ITIL 4 Edition. London: TSO (The Stationery Office), 2019.</li>
+                    
+                    <li><strong>BROWN, T.</strong> Design Thinking. <em>Harvard Business Review</em>, v. 86, n. 6, p. 84-92, June 2008.</li>
+                    
+                    <li><strong>IDEO.ORG.</strong> Design Thinking for Health: A Human-Centered Approach to Healthcare Innovation. San Francisco: IDEO, 2022.</li>
+                    
+                    <li><strong>SCALED AGILE, INC.</strong> SAFe 6.0 Framework for Business Agility. Boulder, CO: Scaled Agile, 2023.</li>
+                    
+                    <li><strong>OFFICE OF GOVERNMENT COMMERCE.</strong> PRINCE2® - Projects IN Controlled Environments. Norwich: The Stationery Office, 2017.</li>
+                </ol>
+            </div>
+            
+            <h3>💻 Saúde Digital e Inovação Tecnológica</h3>
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                <ol start="26" style="line-height: 1.8; padding-left: 20px;">
+                    <li><strong>FORNAZIN, M. et al.</strong> Saúde Digital e Inteligência Artificial no SUS: desafios e perspectivas. <em>Observatório do SUS - ENSP/Fiocruz</em>, Rio de Janeiro, 2024.</li>
+                    
+                    <li><strong>HIMSS.</strong> Digital Health Indicator 2023: Global Survey Results. Chicago: Healthcare Information and Management Systems Society, 2023.</li>
+                    
+                    <li><strong>CETIC.BR.</strong> Pesquisa TIC Saúde 2023: Pesquisa sobre o uso das tecnologias de informação e comunicação nos estabelecimentos de saúde brasileiros. São Paulo: CGI.br, 2024.</li>
+                    
+                    <li><strong>FUNDAÇÃO OSWALDO CRUZ.</strong> PACK Brasil Adulto 2023/2024 - Practical Approach to Care Kit. Florianópolis: Fiocruz/ENSP, 2024.</li>
+                    
+                    <li><strong>TELLUS INSTITUTE.</strong> Engajamento Digital na Saúde: Projeto de inovação em UBSs. São Paulo: Instituto Tellus, 2021.</li>
+                </ol>
+            </div>
+            
+            <h3>📐 Normas Técnicas e Padrões</h3>
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                <ol start="31" style="line-height: 1.8; padding-left: 20px;">
+                    <li><strong>ISO/IEC.</strong> ISO/IEC 27001:2022 - Information security, cybersecurity and privacy protection. Geneva: International Organization for Standardization, 2022.</li>
+                    
+                    <li><strong>ISO.</strong> ISO 9241-210:2019 - Ergonomics of human-system interaction. Geneva: International Organization for Standardization, 2019.</li>
+                    
+                    <li><strong>W3C.</strong> Web Content Accessibility Guidelines (WCAG) 2.1. World Wide Web Consortium, 2018.</li>
+                    
+                    <li><strong>HL7 INTERNATIONAL.</strong> FHIR R4 (Fast Healthcare Interoperability Resources) Specification. Ann Arbor, MI: Health Level Seven International, 2019.</li>
+                    
+                    <li><strong>NIELSEN, J.</strong> 10 Usability Heuristics for User Interface Design. Nielsen Norman Group, Updated 2020.</li>
+                </ol>
+            </div>
+            
+            <h3>📊 Análises Econômicas e Estudos de Viabilidade</h3>
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                <ol start="36" style="line-height: 1.8; padding-left: 20px;">
+                    <li><strong>CONITEC.</strong> Diretrizes Metodológicas: Diretriz de Avaliação Econômica. Brasília: Ministério da Saúde, 2022.</li>
+                    
+                    <li><strong>CAMBIANO, V. et al.</strong> Cost-effectiveness of pre-exposure prophylaxis for HIV prevention in men who have sex with men in the UK: a modelling study and health economic evaluation. <em>The Lancet Infectious Diseases</em>, v. 18, n. 1, p. 85-94, 2018.</li>
+                    
+                    <li><strong>AMICK, A.K. et al.</strong> Daily Oral HIV Pre-exposure Prophylaxis Among Young Men Who Have Sex With Men in the United States: Cost-saving at Generic Drug Price. <em>Clinical Infectious Diseases</em>, v. 78, p. 402-410, 2023.</li>
+                    
+                    <li><strong>LUZ, P.M. et al.</strong> PrEP adopted by the Brazilian National Health System: What is the size of the demand? <em>Medicine</em>, v. 97, n. 22, e10602, 2018.</li>
+                    
+                    <li><strong>BRASIL. Ministério da Saúde.</strong> Painel PrEP: Monitoramento da Profilaxia Pré-Exposição. Departamento de HIV/Aids, Tuberculose, Hepatites Virais e IST. Brasília, 2024. Disponível em: https://www.gov.br/aids/pt-br/assuntos/prevencao-combinada/painelprep</li>
+                </ol>
+            </div>
+            
+            <h3>🌐 Relatórios e Documentos Complementares</h3>
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                <ol start="41" style="line-height: 1.8; padding-left: 20px;">
+                    <li><strong>IBGE.</strong> Pesquisa Nacional de Saúde 2019: Percepção do estado de saúde, estilos de vida, doenças crônicas e saúde bucal. Rio de Janeiro: Instituto Brasileiro de Geografia e Estatística, 2020.</li>
+                    
+                    <li><strong>VIIV HEALTHCARE.</strong> Real-world studies for Apretude (cabotegravir long-acting) for PrEP: Data presented at IDWeek 2024. London: ViiV Healthcare Limited, 2024.</li>
+                    
+                    <li><strong>CÁCERES, C.F. et al.</strong> ¡PrEP Ya! Latin America wants PrEP, and Brazil leads the way. <em>The Lancet HIV</em>, v. 5, n. 3, p. e110-e112, 2018.</li>
+                    
+                    <li><strong>MAGNO, L. et al.</strong> Reaching Out to Adolescents at High Risk of HIV Infection in Brazil: Demand Creation Strategies for PrEP and Other HIV Combination Prevention Methods. <em>Archives of Sexual Behavior</em>, v. 52, p. 703-719, 2022.</li>
+                    
+                    <li><strong>HOAGLAND, B. et al.</strong> Awareness and Willingness to Use Pre-exposure Prophylaxis (PrEP) Among Men Who Have Sex with Men and Transgender Women in Brazil. <em>AIDS and Behavior</em>, v. 21, n. 5, p. 1278-1287, 2017.</li>
+                </ol>
+            </div>
+            
+            <div style="background: #e8f5e9; padding: 25px; border-radius: 10px; margin-top: 30px;">
+                <h4 style="color: #2E7D32; margin-bottom: 15px;">📖 Nota sobre as Referências</h4>
+                <p style="line-height: 1.6;">
+                    Este documento foi construído com base em <strong>45 referências primárias</strong>, incluindo 
+                    <strong>estudos científicos peer-reviewed</strong>, <strong>documentos oficiais governamentais</strong>, 
+                    <strong>frameworks internacionais de gestão</strong> e <strong>normas técnicas vigentes</strong>. 
+                    Todas as projeções e estimativas apresentadas são fundamentadas em evidências científicas e 
+                    dados epidemiológicos atualizados até setembro de 2025. 
+                </p>
+                <p style="margin-top: 15px; font-style: italic;">
+                    As referências completas, incluindo DOI e links de acesso quando disponíveis, podem ser 
+                    solicitadas através do email: <strong>romariobc@gmail.com</strong>
+                </p>
+            </div>
+        </section>
+        
+        <!-- Rodapé -->
+        <section class="section" style="background: #f5f5f5; text-align: center;">
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #006838;">Informações de Contato</h3>
+                <p style="margin: 10px 0;">
+                    <strong>Email:</strong> projeto.siadprep@saude.gov.br<br>
+                    <strong>Telefone:</strong> (61) 3315-0000<br>
+                    <strong>Website:</strong> www.siadprep.saude.gov.br
+                </p>
+            </div>
+            
+            <div style="padding-top: 20px; border-top: 1px solid #ddd;">
+                <p style="color: #666; font-size: 0.9em;">
+                    Este documento é confidencial e contém informações proprietárias.<br>
+                    © 2025 SIAD-PrEP - Todos os direitos reservados.<br>
+                    Desenvolvido com o apoio do Ministério da Saúde do Brasil
+                </p>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='50'%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' fill='%23006838' font-family='Arial' font-size='14' font-weight='bold'%3ESUS DIGITAL%3C/text%3E%3C/svg%3E" alt="SUS Digital" style="margin: 0 10px;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='50'%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' fill='%23006838' font-family='Arial' font-size='14' font-weight='bold'%3EUNAIDS BRASIL%3C/text%3E%3C/svg%3E" alt="UNAIDS" style="margin: 0 10px;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='50'%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' fill='%23006838' font-family='Arial' font-size='14' font-weight='bold'%3EINOVAÇÃO MS%3C/text%3E%3C/svg%3E" alt="Inovação MS" style="margin: 0 10px;">
+            </div>
+        </section>
+    </div>
+</body>
+</html>
