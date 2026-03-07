@@ -1,0 +1,131 @@
+// This is your Prisma schema file.
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PATIENT
+  PROFESSIONAL
+  ADMIN
+}
+
+enum AppointmentType {
+  INITIAL
+  FOLLOWUP
+  LAB_RESULT
+  TELEMEDICINE
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum MedicationRegimen {
+  TENOFOVIR_EMTRICITABINA
+  TENOFOVIR_LAMIVUDINA
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         UserRole @default(PATIENT)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  patient      Patient?
+  professional Professional?
+
+  @@map("users")
+}
+
+model Patient {
+  id           String    @id @default(uuid())
+  userId       String    @unique
+  cpf          String    @unique
+  dateOfBirth  DateTime
+  phone        String?
+  address      String?
+  consentGiven Boolean   @default(false)
+  consentDate  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime? // soft delete (LGPD)
+
+  user         User           @relation(fields: [userId], references: [id])
+  appointments Appointment[]
+  medications  Medication[]
+
+  @@map("patients")
+}
+
+model Professional {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  crm       String   @unique
+  specialty String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id])
+  appointments Appointment[]
+
+  @@map("professionals")
+}
+
+model Appointment {
+  id             String            @id @default(uuid())
+  patientId      String
+  professionalId String
+  scheduledAt    DateTime
+  type           AppointmentType
+  status         AppointmentStatus @default(SCHEDULED)
+  notes          String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  patient      Patient      @relation(fields: [patientId], references: [id])
+  professional Professional @relation(fields: [professionalId], references: [id])
+
+  @@map("appointments")
+}
+
+model Medication {
+  id           String            @id @default(uuid())
+  patientId    String
+  regimen      MedicationRegimen
+  startDate    DateTime
+  endDate      DateTime?
+  prescribedBy String
+  isActive     Boolean           @default(true)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  patient   Patient    @relation(fields: [patientId], references: [id])
+  dispenses Dispense[]
+
+  @@map("medications")
+}
+
+model Dispense {
+  id           String   @id @default(uuid())
+  medicationId String
+  quantity     Int
+  dispensedAt  DateTime @default(now())
+
+  medication Medication @relation(fields: [medicationId], references: [id])
+
+  @@map("dispenses")
+}
