@@ -265,7 +265,7 @@ Cada microserviço segue a estrutura DDD em camadas:
 - [Arquitetura de Solução](docs/architecture/ARCHITECTURE.md) *(em construção)*
 - [Guia de Desenvolvimento](docs/technical/DEVELOPMENT.md) *(em construção)*
 - [Padrões de Código](docs/technical/CODING-STANDARDS.md) *(em construção)*
-- [Guia de Deploy](docs/technical/DEPLOYMENT.md) *(em construção)*
+- [Guia de Deploy Azure](docs/azure-deployment.md)
 
 ## 🤝 Contribuindo
 
@@ -287,6 +287,259 @@ Este projeto está licenciado sob a Apache License 2.0 - veja o arquivo [LICENSE
 - Fiocruz
 - CONASS / CONASEMS
 - Sociedade Civil Organizada
+
+---
+
+## 🚀 Deploy no Azure Web App
+
+Este projeto está configurado para deploy no **Azure Web App** via containers Docker com CI/CD automatizado pelo GitHub Actions.
+
+### Recursos Azure utilizados
+
+| Recurso | Finalidade | SKU recomendado |
+|---------|-----------|-----------------|
+| **Azure Web App** | Hospeda a API | B2 (Basic) ou superior |
+| **Azure Database for PostgreSQL Flexible Server** | Banco de dados gerenciado | Burstable B1ms (dev) / General Purpose (prod) |
+| **GitHub Container Registry (GHCR)** | Armazena a imagem Docker | Incluído no GitHub |
+| **Azure Key Vault** *(recomendado)* | Gerencia segredos em produção | Standard |
+
+### Pré-requisitos
+
+- [Azure CLI](https://learn.microsoft.com/pt-br/cli/azure/install-azure-cli) instalado e autenticado (`az login`)
+- Docker instalado localmente
+- Conta GitHub com o repositório SIAD-PrEP
+- Node.js 20+ instalado localmente
+
+---
+
+### Passo 1 — Criar a infraestrutura no Azure
+
+#### 1.1 Variáveis do script
+
+```bash
+RESOURCE_GROUP="rg-siadprep-prod"
+LOCATION="brazilsouth"
+WEBAPP_NAME="siad-prep-app"           # deve ser globalmente único
+POSTGRES_SERVER="siadprep-db-server"  # deve ser globalmente único
+POSTGRES_DB="siadprep"
+POSTGRES_USER="siadprepAdmin"
+POSTGRES_PASSWORD="<senha-forte-aqui>"
+APP_SERVICE_PLAN="asp-siadprep"
+```
+
+#### 1.2 Criar Resource Group
+
+```bash
+az group create \
+  --name "$RESOURCE_GROUP" \
+  --location "$LOCATION"
+```
+
+#### 1.3 Criar banco de dados PostgreSQL (Flexible Server)
+
+```bash
+az postgres flexible-server create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$POSTGRES_SERVER" \
+  --location "$LOCATION" \
+  --admin-user "$POSTGRES_USER" \
+  --admin-password "$POSTGRES_PASSWORD" \
+  --sku-name "Standard_B1ms" \
+  --tier "Burstable" \
+  --version "16" \
+  --storage-size 32 \
+  --public-access "0.0.0.0"
+
+az postgres flexible-server db create \
+  --resource-group "$RESOURCE_GROUP" \
+  --server-name "$POSTGRES_SERVER" \
+  --database-name "$POSTGRES_DB"
+```
+
+> **Nota de segurança:** Em produção, restrinja `--public-access` a IPs específicos ou use uma Virtual Network (VNet).
+
+#### 1.4 Criar App Service Plan (Linux)
+
+```bash
+az appservice plan create \
+  --name "$APP_SERVICE_PLAN" \
+  --resource-group "$RESOURCE_GROUP" \
+  --location "$LOCATION" \
+  --is-linux \
+  --sku B2
+```
+
+#### 1.5 Criar Azure Web App (container)
+
+```bash
+az webapp create \
+  --name "$WEBAPP_NAME" \
+  --resource-group "$RESOURCE_GROUP" \
+  --plan "$APP_SERVICE_PLAN" \
+  --deployment-container-image-name "ghcr.io/<seu-usuario-github>/<seu-repositorio>:latest"
+```
+
+---
+
+### Passo 2 — Configurar variáveis de ambiente
+
+```bash
+DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_SERVER}.postgres.database.azure.com:5432/${POSTGRES_DB}?sslmode=require"
+JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+
+az webapp config appsettings set \
+  --name "$WEBAPP_NAME" \
+  --resource-group "$RESOURCE_GROUP" \
+  --settings \
+    NODE_ENV="production" \
+    DATABASE_URL="$DATABASE_URL" \
+    JWT_SECRET="$JWT_SECRET" \
+    JWT_EXPIRES_IN="7d" \
+    BCRYPT_ROUNDS="12" \
+    WEBSITES_PORT="8080"
+```
+
+> `WEBSITES_PORT=8080` instrui o Azure a rotear o tráfego para a porta exposta no `Dockerfile`.
+
+---
+
+### Passo 3 — Configurar o GitHub Actions (CI/CD)
+
+O pipeline está em `.github/workflows/azure-deploy.yml` e executa 3 jobs em sequência:
+
+```
+push to main
+  └─► test    → testes com PostgreSQL em container
+  └─► build   → docker build + push → ghcr.io/<repo>:latest
+  └─► deploy  → az webapp deploy → Azure Web App
+```
+
+#### 3.1 Criar Service Principal
+
+```bash
+az ad sp create-for-rbac \
+  --name "sp-siadprep-deploy" \
+  --role Contributor \
+  --scopes "/subscriptions/<subscription-id>/resourceGroups/$RESOURCE_GROUP" \
+  --sdk-auth
+```
+
+#### 3.2 Adicionar secret no GitHub
+
+Acesse **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Secret | Valor |
+|--------|-------|
+| `AZURE_CREDENTIALS` | JSON retornado pelo comando acima |
+
+#### 3.3 Atualizar o nome do Web App no workflow
+
+```yaml
+# .github/workflows/azure-deploy.yml
+env:
+  AZURE_WEBAPP_NAME: siad-prep-app   # ← nome exato do seu Web App
+```
+
+---
+
+### Passo 4 — Migrações do banco de dados
+
+O `Dockerfile` já executa `npx prisma migrate deploy` automaticamente no boot. Para verificar o status remotamente:
+
+```bash
+az webapp ssh --name "$WEBAPP_NAME" --resource-group "$RESOURCE_GROUP"
+# dentro do container:
+npx prisma migrate status
+```
+
+---
+
+### Passo 5 — Verificar o deploy
+
+```bash
+# Health check
+curl https://${WEBAPP_NAME}.azurewebsites.net/health
+# Resposta esperada: {"status":"ok"}
+
+# Logs em tempo real
+az webapp log tail \
+  --name "$WEBAPP_NAME" \
+  --resource-group "$RESOURCE_GROUP"
+```
+
+---
+
+### Segurança em produção
+
+#### Azure Key Vault para secrets
+
+```bash
+az keyvault create --name "kv-siadprep" --resource-group "$RESOURCE_GROUP" --location "$LOCATION"
+
+az keyvault secret set --vault-name "kv-siadprep" --name "JWT-SECRET" --value "$JWT_SECRET"
+az keyvault secret set --vault-name "kv-siadprep" --name "DATABASE-URL" --value "$DATABASE_URL"
+
+az webapp identity assign --name "$WEBAPP_NAME" --resource-group "$RESOURCE_GROUP"
+
+WEBAPP_PRINCIPAL=$(az webapp identity show \
+  --name "$WEBAPP_NAME" --resource-group "$RESOURCE_GROUP" --query principalId -o tsv)
+
+az keyvault set-policy --name "kv-siadprep" \
+  --object-id "$WEBAPP_PRINCIPAL" --secret-permissions get list
+
+az webapp config appsettings set \
+  --name "$WEBAPP_NAME" --resource-group "$RESOURCE_GROUP" \
+  --settings \
+    JWT_SECRET="@Microsoft.KeyVault(VaultName=kv-siadprep;SecretName=JWT-SECRET)" \
+    DATABASE_URL="@Microsoft.KeyVault(VaultName=kv-siadprep;SecretName=DATABASE-URL)"
+```
+
+#### Regras de firewall para o PostgreSQL
+
+```bash
+WEBAPP_OUTBOUND_IPS=$(az webapp show \
+  --name "$WEBAPP_NAME" --resource-group "$RESOURCE_GROUP" \
+  --query outboundIpAddresses -o tsv)
+
+for IP in $(echo $WEBAPP_OUTBOUND_IPS | tr ',' ' '); do
+  az postgres flexible-server firewall-rule create \
+    --resource-group "$RESOURCE_GROUP" \
+    --name "$POSTGRES_SERVER" \
+    --rule-name "allow-webapp-$IP" \
+    --start-ip-address "$IP" \
+    --end-ip-address "$IP"
+done
+```
+
+---
+
+### Checklist de deploy
+
+- [ ] Resource Group criado
+- [ ] PostgreSQL Flexible Server criado e acessível
+- [ ] App Service Plan Linux criado
+- [ ] Azure Web App criado com suporte a containers
+- [ ] Variáveis de ambiente configuradas (`NODE_ENV`, `DATABASE_URL`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `BCRYPT_ROUNDS`, `WEBSITES_PORT`)
+- [ ] Secret `AZURE_CREDENTIALS` adicionado no GitHub
+- [ ] `AZURE_WEBAPP_NAME` atualizado no workflow
+- [ ] Push para `main` disparou o pipeline com sucesso
+- [ ] `GET /health` retornando `{"status":"ok"}`
+- [ ] Migrações Prisma aplicadas
+- [ ] Regras de firewall do PostgreSQL configuradas
+- [ ] Key Vault configurado com secrets sensíveis *(recomendado para produção)*
+
+### Estimativa de custos (região Brazil South)
+
+| Recurso | SKU | Custo estimado/mês |
+|---------|-----|--------------------|
+| App Service Plan B2 | 2 vCore, 3.5 GB RAM | ~USD 75 |
+| PostgreSQL Flexible Server B1ms | 1 vCore, 2 GB RAM | ~USD 25 |
+| Container Registry Basic | 10 GB storage | ~USD 5 |
+| **Total estimado** | | **~USD 105/mês** |
+
+> Preços aproximados. Consulte a [Calculadora de Preços Azure](https://azure.microsoft.com/pt-br/pricing/calculator/) para valores atualizados.
+
+Guia completo e detalhado: [docs/azure-deployment.md](docs/azure-deployment.md)
 
 ---
 
