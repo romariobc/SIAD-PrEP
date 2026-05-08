@@ -26,8 +26,6 @@ pids/
 coverage/
 .nyc_output/
 
-# Prisma
-src/database/prisma/migrations/
 
 # OS
 .DS_Store
