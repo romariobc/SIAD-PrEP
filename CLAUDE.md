@@ -4,27 +4,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-SIAD-PrEP is a Brazilian public health platform for HIV Pre-Exposure Prophylaxis (PrEP) management. It is a **monolithic MVC application** built with Node.js + Express + TypeScript, using PostgreSQL via Prisma ORM. The frontend (React) is planned for a future phase (`client/`).
+SIAD-PrEP é uma plataforma brasileira de saúde pública para gestão da Profilaxia Pré-Exposição (PrEP) ao HIV. É uma **aplicação monolítica MVC** construída com Node.js + Express + TypeScript, usando PostgreSQL via Prisma ORM. O frontend (React) está planejado para uma fase futura (`client/`).
 
 ## Commands
 
-### Install dependencies
+### Instalar dependências
 
 ```bash
 npm install
 ```
 
-### Local infrastructure (PostgreSQL + pgAdmin)
+### Infraestrutura local (PostgreSQL + pgAdmin)
 
 ```bash
 docker-compose -f docker-compose.dev.yml up -d
 docker-compose -f docker-compose.dev.yml down
 ```
 
-### Development server
+### Servidor de desenvolvimento
 
 ```bash
-npm run dev          # tsx watch — hot reload on http://localhost:3000
+npm run dev          # tsx watch — hot reload em http://localhost:3000
 ```
 
 ### Build
@@ -34,91 +34,189 @@ npm run build        # tsc → dist/
 npm start            # node dist/server.js
 ```
 
-### Testing
+### Testes
 
 ```bash
-npm test             # Jest (all tests)
-npm run test:watch   # Jest watch mode
+npm test             # Jest (todos os testes)
+npm run test:watch   # Jest modo watch
 npm run test:coverage
 ```
 
-Tests live in `tests/unit/` and `tests/integration/`.
+Testes ficam em `tests/unit/` e `tests/integration/`.
 
-### Database (Prisma)
+### Banco de dados (Prisma)
 
 ```bash
-# First time / after schema changes
+# Primeira vez / após mudanças no schema
 npm run db:migrate          # prisma migrate dev
-npm run db:generate         # prisma generate (after editing schema.prisma)
+npm run db:generate         # prisma generate (após editar schema.prisma)
 npm run db:studio           # Prisma Studio GUI
-npm run db:seed             # run src/database/seed.ts
+npm run db:seed             # executa src/database/seed.ts
 ```
 
-Schema file: `src/database/prisma/schema.prisma`
+Schema: `src/database/prisma/schema.prisma`
 
-### Environment
+### Variáveis de ambiente
 
-Copy `.env.example` to `.env` and fill in values before starting.
+Copie `.env.example` para `.env` e preencha os valores antes de iniciar.
 
 ```bash
 cp .env.example .env
 ```
 
+Variáveis obrigatórias: `DATABASE_URL`, `JWT_SECRET` (≥32 chars), `GOOGLE_CLIENT_ID`.
+
 ## Architecture
 
-### MVC Flow
+### Fluxo MVC
 
 ```
 Routes → Controllers → Services → Prisma (DB)
 ```
 
-- **`src/routes/`** — Express Router per domain; apply middlewares, call controller methods.
-- **`src/controllers/`** — Receive req/res, call service, return JSON. No business logic here.
-- **`src/services/`** — All business logic. No HTTP knowledge. Throw `AppError` for business failures.
-- **`src/database/`** — Prisma client singleton + schema.
-- **`src/middlewares/`** — `authenticate`, `authorize`, `validate`, `errorMiddleware`.
-- **`src/config/env.ts`** — Zod-validated env variables. App exits if env is invalid.
-- **`src/app.ts`** — Express app factory (no `listen`). Used by server and tests.
+- **`src/routes/`** — Express Router por domínio; aplica middlewares, chama métodos do controller.
+- **`src/controllers/`** — Recebe req/res, chama service, retorna JSON. Sem lógica de negócio.
+- **`src/services/`** — Toda a lógica de negócio. Sem conhecimento HTTP. Lança `AppError` para falhas.
+- **`src/database/`** — Singleton do cliente Prisma + schema.
+- **`src/middlewares/`** — `authenticate`, `authorize`, `validate`, `errorMiddleware`, rate limiting.
+- **`src/config/env.ts`** — Variáveis de ambiente validadas com Zod. App encerra se env for inválido.
+- **`src/app.ts`** — Factory do Express app (sem `listen`). Usado pelo servidor e pelos testes.
+- **`src/docs/swagger.ts`** — Documentação OpenAPI 3.0. UI disponível em `/api/docs`.
 
-### Domains and Routes
+### Domínios e Rotas
 
-| Domain       | Base route             |
-|--------------|------------------------|
-| Auth         | `/api/auth`            |
-| Patients     | `/api/patients`        |
-| Appointments | `/api/appointments`    |
-| Medications  | `/api/medications`     |
-| Professionals| `/api/professionals`   |
+| Domínio       | Rota base              |
+|---------------|------------------------|
+| Auth          | `/api/auth`            |
+| Patients      | `/api/patients`        |
+| Appointments  | `/api/appointments`    |
+| Medications   | `/api/medications`     |
+| Professionals | `/api/professionals`   |
 
-Health check: `GET /health`
+Health check: `GET /health`  
+Documentação: `GET /api/docs`
 
-### Error handling
+### Endpoints de Autenticação
 
-Throw `AppError(statusCode, message)` for predictable failures. The global `errorMiddleware` catches it and returns `{ error: message }`. Zod validation errors are caught automatically by `validate` middleware.
+| Método | Rota                  | Descrição                              |
+|--------|-----------------------|----------------------------------------|
+| POST   | `/api/auth/register`  | Cadastro com email + senha             |
+| POST   | `/api/auth/login`     | Login com email + senha                |
+| POST   | `/api/auth/refresh`   | Renovação de access token              |
+| POST   | `/api/auth/google`    | Login/cadastro via Google OAuth 2.0    |
+
+### Autenticação e Tokens JWT
+
+Dois tokens separados com claim `type`:
+
+- **Access token** (`type: 'access'`): expira em 15 minutos. Usado no header `Authorization: Bearer`.
+- **Refresh token** (`type: 'refresh'`): expira em 30 dias. Enviado apenas no endpoint `/refresh`.
+
+O middleware `authenticate` rejeita qualquer token onde `type !== 'access'` (401).  
+O endpoint `/refresh` rejeita tokens onde `type !== 'refresh'` (401).
+
+### Google OAuth 2.0
+
+Fluxo via `google-auth-library` — verificação de ID Token no servidor:
+
+1. Cliente obtém `idToken` do Google Sign-In no frontend.
+2. `POST /api/auth/google` com `{ idToken }`.
+3. `AuthGoogleService.loginOrRegister` executa 3 casos em ordem:
+   - Usuário encontrado por `googleId` → login direto.
+   - Usuário encontrado por e-mail → vincula `googleId` + login.
+   - Nenhuma conta → cria usuário (`role: PATIENT`, `passwordHash: null`).
+4. Retorna `{ accessToken, refreshToken, user }`.
+
+Usuários criados via Google não têm senha. Tentar login por senha com essas contas retorna 400.
+
+### Tratamento de Erros
+
+Lance `AppError(statusCode, message)` para falhas previsíveis. O `errorMiddleware` global captura e retorna `{ error: message }`. Erros de validação Zod são capturados automaticamente pelo middleware `validate`.
 
 ### Roles
 
-`PATIENT`, `PROFESSIONAL`, `ADMIN`. Stored in JWT payload (`role` field). Use `authorize(...roles)` middleware to restrict routes.
+`PATIENT`, `PROFESSIONAL`, `ADMIN`. Armazenados no payload do JWT (campo `role`). Use `authorize(...roles)` para restringir rotas.
 
-## Commit Convention
+Restrições importantes:
+- `GET /api/patients/:id` e `PATCH /api/patients/:id` requerem `PROFESSIONAL` ou `ADMIN`.
+- `PATCH /api/appointments/:id/complete` requer `PROFESSIONAL` ou `ADMIN`.
 
-Conventional Commits:
+### Rate Limiting
+
+`express-rate-limit` aplicado em `/api/auth`: 20 requisições por 15 minutos por IP.
+
+### HTTP Logging
+
+`morgan` configurado por ambiente: `dev` (desenvolvimento), `combined` (produção), desativado em `test`.
+
+## Deploy — GCP Cloud Run
+
+O deploy em produção usa **Google Cloud Run + Cloud SQL (PostgreSQL)** na região `southamerica-east1` (São Paulo).
+
+### Workflows GitHub Actions
+
+| Arquivo                         | Gatilho               | Função                                  |
+|---------------------------------|-----------------------|-----------------------------------------|
+| `.github/workflows/ci.yml`      | PRs e push em `main`  | Lint (tsc), build e testes unitários    |
+| `.github/workflows/deploy.yml`  | Push em `main`        | Build Docker, push para Artifact Registry, deploy no Cloud Run |
+
+### Secrets necessários no GitHub
+
+| Secret                           | Descrição                                      |
+|----------------------------------|------------------------------------------------|
+| `GCP_PROJECT_ID`                 | ID do projeto GCP                              |
+| `GCP_WORKLOAD_IDENTITY_PROVIDER` | Provider Workload Identity Federation          |
+| `GCP_SERVICE_ACCOUNT`            | Email da service account de deploy             |
+
+Credenciais de runtime (DATABASE_URL, JWT_SECRET, GOOGLE_CLIENT_ID) são lidas do **Secret Manager** do GCP, não de secrets do GitHub.
+
+### Dockerfile
+
+Multi-stage: `builder` (compila TypeScript + gera Prisma client) → `runner` (imagem mínima de produção). Porta exposta: `8080`.
+
+## Convenção de Commits
+
+Conventional Commits em português:
 
 ```
-feat(auth): add refresh token endpoint
-fix(patient): handle duplicate CPF on create
-test(appointment): add cancellation unit test
+feat(auth): adicionar endpoint de refresh token
+fix(patient): tratar CPF duplicado no cadastro
+test(appointment): adicionar teste de cancelamento
 ```
 
-Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
+Tipos: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 
-## Key Compliance Notes
+## Conformidade LGPD
 
-- **LGPD**: Patients use soft delete (`deletedAt`) — never hard delete. `consentGiven` + `consentDate` required. CPF is sensitive — never log it.
-- Secrets go in `.env` (local) or a secrets manager (production) — never in code or committed files.
+- Pacientes usam soft delete (`deletedAt`) — nunca hard delete.
+- `consentGiven` + `consentDate` são obrigatórios no cadastro de pacientes.
+- CPF é dado sensível — nunca logar, nunca expor em respostas de lista.
+- Secrets ficam em `.env` (local) ou Secret Manager (produção) — nunca em código ou arquivos commitados.
+
+## Seed
+
+`npm run db:seed` popula o banco com dados de desenvolvimento (idempotente via `upsert`):
+
+- 1 admin, 1 profissional (CRM-SP-123456 / Infectologia)
+- 2 pacientes com consentimento LGPD
+- 3 consultas (1 concluída no passado, 2 futuras)
+- 1 medicamento ativo com 2 dispensações
+
+## Estrutura de Testes
+
+```
+tests/
+  setup.ts              # Variáveis de env para Jest (sem banco de dados)
+  unit/
+    middlewares/        # validate, auth
+    services/           # auth, auth.google, patient, appointment, medication, professional
+  integration/          # (a implementar — requer banco real)
+```
+
+Todos os testes unitários mockam o Prisma client — nenhum banco de dados necessário para `npm test`.
 
 ## .claude/ Reference
 
-- `.claude/agents/` — Custom Claude agent configurations
-- `.claude/skills/` — Reusable skill definitions
-- `.claude/tasks/` — Task tracking
+- `.claude/agents/` — Configurações de agentes Claude personalizados
+- `.claude/skills/` — Definições de skills reutilizáveis
+- `.claude/tasks/` — Rastreamento de tarefas
