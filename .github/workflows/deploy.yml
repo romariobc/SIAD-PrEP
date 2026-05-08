@@ -1,0 +1,78 @@
+name: Deploy para Cloud Run
+
+on:
+  push:
+    branches: [main]
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: southamerica-east1          # São Paulo
+  SERVICE: siad-prep-api
+  REGISTRY: southamerica-east1-docker.pkg.dev
+
+jobs:
+  deploy:
+    name: Build e deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # necessário para Workload Identity Federation
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      # ── Testes ─────────────────────────────────────────────────────────────
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Gerar Prisma Client
+        run: npx prisma generate --schema=src/database/prisma/schema.prisma
+
+      - name: Verificar tipos TypeScript
+        run: npm run lint
+
+      - name: Executar testes
+        run: npm test
+
+      # ── Autenticação GCP ───────────────────────────────────────────────────
+      # Recomendado: Workload Identity Federation (sem chave de serviço em secrets)
+      # Configuração: https://github.com/google-github-actions/auth#setup
+      - name: Autenticar no Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Configurar Docker para Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
+
+      # ── Build e push da imagem ─────────────────────────────────────────────
+      - name: Build da imagem Docker
+        run: |
+          docker build \
+            -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }} \
+            -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:latest \
+            .
+
+      - name: Push para Artifact Registry
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:latest
+
+      # ── Deploy no Cloud Run ────────────────────────────────────────────────
+      - name: Deploy no Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE }}
+          region: ${{ env.REGION }}
+          image: ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}
+          env_vars: |
+            NODE_ENV=production
+          secrets: |
+            DATABASE_URL=siad-prep-database-url:latest
+            JWT_SECRET=siad-prep-jwt-secret:latest
