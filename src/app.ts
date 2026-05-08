@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import swaggerUi from 'swagger-ui-express';
 
 import { errorMiddleware } from './middlewares/error.middleware';
 import { authRoutes } from './routes/auth.routes';
@@ -8,13 +9,17 @@ import { patientRoutes } from './routes/patient.routes';
 import { appointmentRoutes } from './routes/appointment.routes';
 import { medicationRoutes } from './routes/medication.routes';
 import { professionalRoutes } from './routes/professional.routes';
+import { swaggerSpec } from './docs/swagger';
 
 export function createApp() {
   const app = express();
 
-  app.use(helmet());
+  app.use(helmet({ contentSecurityPolicy: false }));
   app.use(cors());
   app.use(express.json());
+
+  // API docs
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   // Health check
   app.get('/health', (_req, res) => {
