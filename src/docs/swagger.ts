@@ -112,6 +112,34 @@ export const swaggerSpec: OpenAPIV3.Document = {
           accessToken: { type: 'string' },
         },
       },
+      GoogleLoginRequest: {
+        type: 'object',
+        required: ['idToken'],
+        properties: {
+          idToken: {
+            type: 'string',
+            description: 'ID Token obtido pelo frontend via Google Sign-In SDK (credential.credential)',
+            example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
+          },
+        },
+      },
+      GoogleLoginResponse: {
+        type: 'object',
+        properties: {
+          user: {
+            type: 'object',
+            properties: {
+              id: { type: 'string', format: 'uuid' },
+              email: { type: 'string', format: 'email' },
+              name: { type: 'string' },
+              role: { $ref: '#/components/schemas/UserRole' },
+              createdAt: { type: 'string', format: 'date-time' },
+            },
+          },
+          accessToken: { type: 'string' },
+          refreshToken: { type: 'string' },
+        },
+      },
       // ── Patient ───────────────────────────────────────────────────────────
       Patient: {
         type: 'object',
@@ -347,6 +375,38 @@ export const swaggerSpec: OpenAPIV3.Document = {
           },
           '400': { $ref: '#/components/responses/ValidationError' },
           '401': { $ref: '#/components/responses/Unauthorized' },
+          '403': { description: 'Conta inativa', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
+        },
+      },
+    },
+    '/api/auth/google': {
+      post: {
+        tags: ['Auth'],
+        summary: 'Login social com Google',
+        description: `Autentica ou registra um usuário via Google OAuth 2.0.
+
+**Fluxo no frontend:**
+1. Integre o [Google Identity Services](https://developers.google.com/identity/gsi/web) ou o SDK mobile
+2. Após o usuário autorizar, você receberá um \`credential\` (ID Token)
+3. Envie esse token para este endpoint
+
+**Comportamento do backend:**
+- Token verificado com as chaves públicas do Google
+- Se \`googleId\` já existe → login direto
+- Se e-mail existe (conta local) → vincula \`googleId\` à conta e faz login
+- Se nenhum dos dois → cria nova conta com role \`PATIENT\``,
+        operationId: 'loginWithGoogle',
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: { $ref: '#/components/schemas/GoogleLoginRequest' } } },
+        },
+        responses: {
+          '200': {
+            description: 'Autenticação bem-sucedida',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/GoogleLoginResponse' } } },
+          },
+          '400': { description: 'idToken ausente ou inválido', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
+          '401': { description: 'Token Google inválido ou e-mail não verificado', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
           '403': { description: 'Conta inativa', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
         },
       },

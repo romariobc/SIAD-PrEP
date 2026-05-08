@@ -17,8 +17,13 @@ const loginSchema = z.object({
   password: z.string(),
 });
 
+const googleSchema = z.object({
+  idToken: z.string().min(1),
+});
+
 router.post('/register', validate(registerSchema), AuthController.register);
 router.post('/login', validate(loginSchema), AuthController.login);
 router.post('/refresh', AuthController.refresh);
+router.post('/google', validate(googleSchema), AuthController.loginWithGoogle);
 
 export { router as authRoutes };

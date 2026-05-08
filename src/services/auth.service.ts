@@ -42,6 +42,8 @@ export class AuthService {
     const user = await prisma.user.findUnique({ where: { email: input.email } });
     if (!user) throw new AppError(401, 'Invalid credentials');
 
+    if (!user.passwordHash) throw new AppError(400, 'This account uses Google login. Please sign in with Google.');
+
     const valid = await bcrypt.compare(input.password, user.passwordHash);
     if (!valid) throw new AppError(401, 'Invalid credentials');
 
@@ -64,6 +66,14 @@ export class AuthService {
       if (err instanceof AppError) throw err;
       throw new AppError(401, 'Invalid or expired refresh token');
     }
+  }
+
+  static issueAccessToken(userId: string, role: string): string {
+    return AuthService.signToken(userId, role, 'access');
+  }
+
+  static issueRefreshToken(userId: string, role: string): string {
+    return AuthService.signToken(userId, role, 'refresh');
   }
 
   private static signToken(userId: string, role: string, type: 'access' | 'refresh'): string {

@@ -40,6 +40,7 @@ const fakeUser = {
   id: 'user-id-1',
   email: 'test@example.com',
   passwordHash: 'hashed-password',
+  googleId: null,
   name: 'Test User',
   role: 'PATIENT' as const,
   isActive: true,
