@@ -17,9 +17,9 @@ const createPatientSchema = z.object({
 });
 
 router.get('/', authorize('PROFESSIONAL', 'ADMIN'), PatientController.list);
-router.get('/:id', PatientController.getById);
+router.get('/:id', authorize('PROFESSIONAL', 'ADMIN'), PatientController.getById);
 router.post('/', validate(createPatientSchema), PatientController.create);
-router.patch('/:id', PatientController.update);
+router.patch('/:id', authorize('PROFESSIONAL', 'ADMIN'), PatientController.update);
 router.delete('/:id', authorize('ADMIN'), PatientController.softDelete);
 
 export { router as patientRoutes };
