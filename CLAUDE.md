@@ -1,5 +1,23 @@
 # CLAUDE.md
 
+## Harness de referência
+
+Este projeto opera sob o harness de engenharia de contexto em:
+**https://github.com/romariobc/dev_flow_create_harness** (branch: `dominio/saude`)
+
+Antes de qualquer tarefa, leia no harness:
+- `dev-flow-harness/01-identidade-memoria/persona.md`
+- `dev-flow-harness/04-guardrails-seguranca/checklist-seguranca-llm.md`
+- `dev-flow-harness/04-guardrails-seguranca/dados-sensiveis-saude.md`
+- `dev-flow-harness/05-harness-evals/ciclo-de-sessao.md` — leia **antes** de tocar em código
+- `dev-flow-harness/05-harness-evals/criterios-aceite-padrao.md`
+- `dev-flow-harness/05-harness-evals/estado-e-progresso.md`
+
+Divergências deste projeto em relação ao harness estão documentadas em `context/adaptacoes.md`.
+
+---
+
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
