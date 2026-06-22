@@ -1,0 +1,40 @@
+{
+  "_comment": "Status válidos: todo, in_progress, blocked, done. Uma feature só vira done depois que o critério de aceite passar de fato — ver dev-flow-harness/05-harness-evals/criterios-aceite-padrao.md.",
+  "features": [
+    {
+      "id": "001",
+      "titulo": "API REST base — Auth, Patients, Appointments, Medications, Professionals",
+      "status": "done",
+      "criterio_aceite": "todos os endpoints respondem corretamente; testes de integração passando",
+      "notas": "Implementado na fase inicial do projeto"
+    },
+    {
+      "id": "002",
+      "titulo": "Cobertura de testes unitários >= 80%",
+      "status": "todo",
+      "criterio_aceite": "npm run test:coverage mostra >= 80% em statements e branches",
+      "notas": "tests/unit/ existe mas cobertura não foi medida ainda"
+    },
+    {
+      "id": "003",
+      "titulo": "Seed de dados realistas para desenvolvimento",
+      "status": "todo",
+      "criterio_aceite": "npm run db:seed popula o banco com pacientes, profissionais e agendamentos de exemplo",
+      "notas": "src/database/seed.ts existe mas conteúdo precisa ser verificado"
+    },
+    {
+      "id": "004",
+      "titulo": "Documentação OpenAPI / Swagger",
+      "status": "todo",
+      "criterio_aceite": "GET /api/docs retorna spec completa; todos os endpoints documentados com exemplos",
+      "notas": ""
+    },
+    {
+      "id": "005",
+      "titulo": "Camada IA — primeiro experimento com harness",
+      "status": "todo",
+      "criterio_aceite": "a definir — este é o primeiro teste de ponta a ponta da metodologia dev_flow_create_harness",
+      "notas": "Escopo a ser definido: sugestão de agenda, análise de adesão, ou assistente de prescrição"
+    }
+  ]
+}
