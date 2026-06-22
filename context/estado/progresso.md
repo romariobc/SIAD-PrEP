@@ -20,7 +20,7 @@
 - `CLAUDE.md` — atualizado com estado real do projeto em português
 - `tsconfig.json` — removidas opções depreciadas (`baseUrl`, `moduleResolution: node`)
 
-**Próximo passo:** Atingir 80% de cobertura em statements (feature 002) — adicionar testes para controllers.
+**Próximo passo:** Feature 005 — Camada IA (escopo a definir com o usuário).
 
 **Decisões pendentes de ADR:** Nenhuma.
 

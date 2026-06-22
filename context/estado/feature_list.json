@@ -11,9 +11,9 @@
     {
       "id": "002",
       "titulo": "Cobertura de testes unitários >= 80%",
-      "status": "in_progress",
+      "status": "done",
       "criterio_aceite": "npm run test:coverage mostra >= 80% em statements e branches",
-      "notas": "69 testes passando. Cobertura atual: 74% statements, 83% branches. Branches OK; statements abaixo do alvo por ausência de testes nos controllers."
+      "notas": "113 testes passando. Cobertura final: 98.4% statements, 83.3% branches. Testes de controllers adicionados (5 arquivos, 44 novos casos)."
     },
     {
       "id": "003",
