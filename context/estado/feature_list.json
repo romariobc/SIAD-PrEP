@@ -6,35 +6,35 @@
       "titulo": "API REST base — Auth, Patients, Appointments, Medications, Professionals",
       "status": "done",
       "criterio_aceite": "todos os endpoints respondem corretamente; testes de integração passando",
-      "notas": "Implementado na fase inicial do projeto"
+      "notas": "Implementado. Inclui Google OAuth 2.0 (POST /api/auth/google), tokens JWT separados (access 15m / refresh 30d), rate limiting em /api/auth, morgan HTTP logging."
     },
     {
       "id": "002",
       "titulo": "Cobertura de testes unitários >= 80%",
-      "status": "todo",
+      "status": "in_progress",
       "criterio_aceite": "npm run test:coverage mostra >= 80% em statements e branches",
-      "notas": "tests/unit/ existe mas cobertura não foi medida ainda"
+      "notas": "69 testes passando. Cobertura atual: 74% statements, 83% branches. Branches OK; statements abaixo do alvo por ausência de testes nos controllers."
     },
     {
       "id": "003",
       "titulo": "Seed de dados realistas para desenvolvimento",
-      "status": "todo",
+      "status": "done",
       "criterio_aceite": "npm run db:seed popula o banco com pacientes, profissionais e agendamentos de exemplo",
-      "notas": "src/database/seed.ts existe mas conteúdo precisa ser verificado"
+      "notas": "src/database/seed.ts implementado e idempotente via upsert: 1 admin, 1 profissional (CRM-SP-123456), 2 pacientes com consentimento LGPD, 3 consultas, 1 medicamento com 2 dispensações."
     },
     {
       "id": "004",
       "titulo": "Documentação OpenAPI / Swagger",
-      "status": "todo",
+      "status": "done",
       "criterio_aceite": "GET /api/docs retorna spec completa; todos os endpoints documentados com exemplos",
-      "notas": ""
+      "notas": "src/docs/swagger.ts implementado via swagger-ui-express. UI em /api/docs. Todos os endpoints documentados, incluindo /api/auth/google."
     },
     {
       "id": "005",
       "titulo": "Camada IA — primeiro experimento com harness",
       "status": "todo",
       "criterio_aceite": "a definir — este é o primeiro teste de ponta a ponta da metodologia dev_flow_create_harness",
-      "notas": "Escopo a ser definido: sugestão de agenda, análise de adesão, ou assistente de prescrição"
+      "notas": "Escopo a ser definido: sugestão de agenda, análise de adesão, ou assistente de prescrição."
     }
   ]
 }
