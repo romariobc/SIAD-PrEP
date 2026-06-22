@@ -7,6 +7,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(32),
   JWT_EXPIRES_IN: z.string().default('7d'),
   BCRYPT_ROUNDS: z.coerce.number().default(12),
+  GOOGLE_CLIENT_ID: z.string().min(1),
 });
 
 const parsed = envSchema.safeParse(process.env);

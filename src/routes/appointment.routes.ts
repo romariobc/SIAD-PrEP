@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { AppointmentController } from '../controllers/appointment.controller';
-import { authenticate } from '../middlewares/auth.middleware';
+import { authenticate, authorize } from '../middlewares/auth.middleware';
 import { validate } from '../middlewares/validate.middleware';
 import { z } from 'zod';
 
@@ -20,6 +20,6 @@ router.get('/', AppointmentController.list);
 router.get('/:id', AppointmentController.getById);
 router.post('/', validate(createSchema), AppointmentController.create);
 router.patch('/:id/cancel', AppointmentController.cancel);
-router.patch('/:id/complete', AppointmentController.complete);
+router.patch('/:id/complete', authorize('PROFESSIONAL', 'ADMIN'), AppointmentController.complete);
 
 export { router as appointmentRoutes };

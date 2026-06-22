@@ -13,7 +13,7 @@ export class ProfessionalController {
 
   static async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const professional = await ProfessionalService.getById(req.params.id);
+      const professional = await ProfessionalService.getById(req.params["id"] as string);
       res.json(professional);
     } catch (err) {
       next(err);
@@ -31,7 +31,7 @@ export class ProfessionalController {
 
   static async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const professional = await ProfessionalService.update(req.params.id, req.body);
+      const professional = await ProfessionalService.update(req.params["id"] as string, req.body);
       res.json(professional);
     } catch (err) {
       next(err);

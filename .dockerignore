@@ -1,0 +1,15 @@
+node_modules
+dist
+coverage
+.env
+.env.*
+!.env.example
+*.log
+.git
+.gitignore
+.github
+client
+tests
+*.test.ts
+jest.config.ts
+docker-compose*.yml

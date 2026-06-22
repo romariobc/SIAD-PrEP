@@ -37,7 +37,8 @@ enum MedicationRegimen {
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
-  passwordHash String
+  passwordHash String?  // null para usuários que se registraram via OAuth
+  googleId     String?  @unique
   name         String
   role         UserRole @default(PATIENT)
   isActive     Boolean  @default(true)

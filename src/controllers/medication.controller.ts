@@ -13,7 +13,7 @@ export class MedicationController {
 
   static async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const medication = await MedicationService.getById(req.params.id);
+      const medication = await MedicationService.getById(req.params["id"] as string);
       res.json(medication);
     } catch (err) {
       next(err);
@@ -31,7 +31,7 @@ export class MedicationController {
 
   static async dispense(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const result = await MedicationService.dispense(req.params.id, req.body);
+      const result = await MedicationService.dispense(req.params["id"] as string, req.body);
       res.json(result);
     } catch (err) {
       next(err);
