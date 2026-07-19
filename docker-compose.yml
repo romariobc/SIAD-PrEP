@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: siadprep-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: siadprep
+      POSTGRES_PASSWORD: siadprep_dev
+      POSTGRES_DB: siadprep
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U siadprep']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: siadprep-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://siadprep:siadprep_dev@postgres:5432/siadprep
+      JWT_SECRET: ${JWT_SECRET:-dev_only_secret_at_least_32_characters_long_change_me}
+      JWT_EXPIRES_IN: 7d
+      JWT_REFRESH_EXPIRES_IN: 30d
+      BCRYPT_ROUNDS: 12
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # First boot has no migration history yet (see src/database/prisma/migrations/,
+    # which is gitignored), so we sync the schema directly instead of `migrate deploy`.
+    command: >
+      sh -c "npx prisma db push --schema=src/database/prisma/schema.prisma --skip-generate --accept-data-loss && npm run dev"
+
+volumes:
+  postgres_data:
