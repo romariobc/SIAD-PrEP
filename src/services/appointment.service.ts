@@ -1,6 +1,7 @@
 import { prisma } from '../database/client';
 import { AppError } from '../middlewares/error.middleware';
 import { AuthPayload } from '../middlewares/auth.middleware';
+import { findOrThrow } from '../utils/findOrThrow';
 
 interface CreateAppointmentInput {
   patientId: string;
@@ -32,14 +33,18 @@ export class AppointmentService {
   }
 
   static async getById(id: string, actor: AuthPayload) {
-    const appointment = await prisma.appointment.findUnique({
-      where: { id },
-      include: {
-        patient: { select: { userId: true, deletedAt: true } },
-        professional: { select: { userId: true } },
-      },
-    });
-    if (!appointment || appointment.patient.deletedAt) {
+    const appointment = await findOrThrow(
+      () =>
+        prisma.appointment.findUnique({
+          where: { id },
+          include: {
+            patient: { select: { userId: true, deletedAt: true } },
+            professional: { select: { userId: true } },
+          },
+        }),
+      'Appointment not found',
+    );
+    if (appointment.patient.deletedAt) {
       throw new AppError(404, 'Appointment not found');
     }
 
@@ -53,15 +58,15 @@ export class AppointmentService {
   }
 
   static async create(input: CreateAppointmentInput) {
-    const patient = await prisma.patient.findFirst({
-      where: { id: input.patientId, deletedAt: null },
-    });
-    if (!patient) throw new AppError(404, 'Patient not found');
+    await findOrThrow(
+      () => prisma.patient.findFirst({ where: { id: input.patientId, deletedAt: null } }),
+      'Patient not found',
+    );
 
-    const professional = await prisma.professional.findUnique({
-      where: { id: input.professionalId },
-    });
-    if (!professional) throw new AppError(404, 'Professional not found');
+    await findOrThrow(
+      () => prisma.professional.findUnique({ where: { id: input.professionalId } }),
+      'Professional not found',
+    );
 
     return prisma.appointment.create({
       data: {

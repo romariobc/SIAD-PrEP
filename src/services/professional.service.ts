@@ -1,5 +1,6 @@
 import { prisma } from '../database/client';
 import { AppError } from '../middlewares/error.middleware';
+import { findOrThrow } from '../utils/findOrThrow';
 
 interface CreateProfessionalInput {
   crm: string;
@@ -15,9 +16,10 @@ export class ProfessionalService {
   }
 
   static async getById(id: string) {
-    const professional = await prisma.professional.findUnique({ where: { id } });
-    if (!professional) throw new AppError(404, 'Professional not found');
-    return professional;
+    return findOrThrow(
+      () => prisma.professional.findUnique({ where: { id } }),
+      'Professional not found',
+    );
   }
 
   static async create(userId: string, input: CreateProfessionalInput) {

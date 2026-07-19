@@ -6,6 +6,7 @@ import { AppError } from './error.middleware';
 export interface AuthPayload {
   sub: string;
   role: string;
+  type?: 'access' | 'refresh';
 }
 
 declare global {
@@ -28,6 +29,9 @@ export function authenticate(req: Request, _res: Response, next: NextFunction): 
 
   try {
     const payload = jwt.verify(token, env.JWT_SECRET) as AuthPayload;
+    if (payload.type === 'refresh') {
+      return next(new AppError(401, 'Invalid or expired token'));
+    }
     req.user = payload;
     next();
   } catch {

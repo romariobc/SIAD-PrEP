@@ -1,6 +1,7 @@
 import { prisma } from '../database/client';
 import { AppError } from '../middlewares/error.middleware';
 import { AuthPayload } from '../middlewares/auth.middleware';
+import { findOrThrow } from '../utils/findOrThrow';
 
 interface CreatePatientInput {
   cpf: string;
@@ -19,8 +20,10 @@ export class PatientService {
   }
 
   static async getById(id: string, actor: AuthPayload) {
-    const patient = await prisma.patient.findFirst({ where: { id, deletedAt: null } });
-    if (!patient) throw new AppError(404, 'Patient not found');
+    const patient = await findOrThrow(
+      () => prisma.patient.findFirst({ where: { id, deletedAt: null } }),
+      'Patient not found',
+    );
     if (actor.role === 'PATIENT' && patient.userId !== actor.sub) {
       throw new AppError(404, 'Patient not found');
     }

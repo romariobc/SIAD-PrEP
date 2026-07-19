@@ -1,6 +1,7 @@
 import { prisma } from '../database/client';
 import { AppError } from '../middlewares/error.middleware';
 import { AuthPayload } from '../middlewares/auth.middleware';
+import { findOrThrow } from '../utils/findOrThrow';
 
 interface CreateMedicationInput {
   patientId: string;
@@ -24,11 +25,15 @@ export class MedicationService {
   }
 
   static async getById(id: string, actor: AuthPayload) {
-    const medication = await prisma.medication.findUnique({
-      where: { id },
-      include: { patient: { select: { userId: true, deletedAt: true } } },
-    });
-    if (!medication || medication.patient.deletedAt) {
+    const medication = await findOrThrow(
+      () =>
+        prisma.medication.findUnique({
+          where: { id },
+          include: { patient: { select: { userId: true, deletedAt: true } } },
+        }),
+      'Medication record not found',
+    );
+    if (medication.patient.deletedAt) {
       throw new AppError(404, 'Medication record not found');
     }
     if (actor.role === 'PATIENT' && medication.patient.userId !== actor.sub) {
@@ -38,10 +43,10 @@ export class MedicationService {
   }
 
   static async create(input: CreateMedicationInput) {
-    const patient = await prisma.patient.findFirst({
-      where: { id: input.patientId, deletedAt: null },
-    });
-    if (!patient) throw new AppError(404, 'Patient not found');
+    await findOrThrow(
+      () => prisma.patient.findFirst({ where: { id: input.patientId, deletedAt: null } }),
+      'Patient not found',
+    );
 
     return prisma.medication.create({
       data: {

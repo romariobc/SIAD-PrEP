@@ -33,8 +33,9 @@ export class AuthService {
       select: { id: true, email: true, name: true, role: true, createdAt: true },
     });
 
-    const token = AuthService.signToken(user.id, user.role);
-    return { user, token };
+    const token = AuthService.signAccessToken(user.id, user.role);
+    const refreshToken = AuthService.signRefreshToken(user.id, user.role);
+    return { user, token, refreshToken };
   }
 
   static async login(input: LoginInput) {
@@ -46,25 +47,40 @@ export class AuthService {
 
     if (!user.isActive) throw new AppError(403, 'Account is inactive');
 
-    const token = AuthService.signToken(user.id, user.role);
-    return { token };
+    const token = AuthService.signAccessToken(user.id, user.role);
+    const refreshToken = AuthService.signRefreshToken(user.id, user.role);
+    return { token, refreshToken };
   }
 
   static async refresh(refreshToken: string) {
     if (!refreshToken) throw new AppError(400, 'Refresh token required');
 
     try {
-      const payload = jwt.verify(refreshToken, env.JWT_SECRET) as { sub: string; role: string };
-      const token = AuthService.signToken(payload.sub, payload.role);
+      const payload = jwt.verify(refreshToken, env.JWT_SECRET) as {
+        sub: string;
+        role: string;
+        type?: string;
+      };
+      if (payload.type !== 'refresh') {
+        throw new AppError(401, 'Invalid or expired refresh token');
+      }
+      const token = AuthService.signAccessToken(payload.sub, payload.role);
       return { token };
-    } catch {
+    } catch (err) {
+      if (err instanceof AppError) throw err;
       throw new AppError(401, 'Invalid or expired refresh token');
     }
   }
 
-  private static signToken(userId: string, role: string): string {
-    return jwt.sign({ sub: userId, role }, env.JWT_SECRET, {
+  private static signAccessToken(userId: string, role: string): string {
+    return jwt.sign({ sub: userId, role, type: 'access' }, env.JWT_SECRET, {
       expiresIn: env.JWT_EXPIRES_IN as jwt.SignOptions['expiresIn'],
+    });
+  }
+
+  private static signRefreshToken(userId: string, role: string): string {
+    return jwt.sign({ sub: userId, role, type: 'refresh' }, env.JWT_SECRET, {
+      expiresIn: env.JWT_REFRESH_EXPIRES_IN as jwt.SignOptions['expiresIn'],
     });
   }
 }
