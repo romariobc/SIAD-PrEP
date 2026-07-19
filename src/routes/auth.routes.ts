@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validate } from '../middlewares/validate.middleware';
+import { authRateLimiter } from '../middlewares/rateLimit.middleware';
 import { z } from 'zod';
 
 const router = Router();
@@ -17,8 +18,8 @@ const loginSchema = z.object({
   password: z.string(),
 });
 
-router.post('/register', validate(registerSchema), AuthController.register);
-router.post('/login', validate(loginSchema), AuthController.login);
-router.post('/refresh', AuthController.refresh);
+router.post('/register', authRateLimiter, validate(registerSchema), AuthController.register);
+router.post('/login', authRateLimiter, validate(loginSchema), AuthController.login);
+router.post('/refresh', authRateLimiter, AuthController.refresh);
 
 export { router as authRoutes };

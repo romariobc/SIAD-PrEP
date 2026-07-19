@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
+import { env } from './config/env';
 import { errorMiddleware } from './middlewares/error.middleware';
 import { authRoutes } from './routes/auth.routes';
 import { patientRoutes } from './routes/patient.routes';
@@ -12,8 +13,10 @@ import { professionalRoutes } from './routes/professional.routes';
 export function createApp() {
   const app = express();
 
+  const allowedOrigins = env.CORS_ORIGIN.split(',').map((origin) => origin.trim());
+
   app.use(helmet());
-  app.use(cors());
+  app.use(cors({ origin: allowedOrigins }));
   app.use(express.json());
 
   // Health check

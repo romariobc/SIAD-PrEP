@@ -4,6 +4,7 @@ jest.mock('../../src/database/client', () => ({
       findFirst: jest.fn(),
       findUnique: jest.fn(),
       update: jest.fn(),
+      create: jest.fn(),
     },
   },
 }));
@@ -17,6 +18,7 @@ const mockedPrisma = prisma as unknown as {
     findFirst: jest.Mock;
     findUnique: jest.Mock;
     update: jest.Mock;
+    create: jest.Mock;
   };
 };
 
@@ -97,5 +99,36 @@ describe('PatientService.update', () => {
       statusCode: 404,
     });
     expect(mockedPrisma.patient.update).not.toHaveBeenCalled();
+  });
+});
+
+describe('PatientService.create', () => {
+  const input = {
+    cpf: '12345678900',
+    dateOfBirth: '1990-01-01T00:00:00.000Z',
+    consentGiven: true,
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('rejects creation when the CPF belongs to an active patient', async () => {
+    mockedPrisma.patient.findFirst.mockResolvedValue({ id: 'existing' });
+
+    await expect(PatientService.create('user-1', input)).rejects.toMatchObject({ statusCode: 409 });
+    expect(mockedPrisma.patient.create).not.toHaveBeenCalled();
+    expect(mockedPrisma.patient.findFirst).toHaveBeenCalledWith({
+      where: { cpf: input.cpf, deletedAt: null },
+    });
+  });
+
+  it('allows re-registering a CPF that only belongs to a soft-deleted patient', async () => {
+    mockedPrisma.patient.findFirst.mockResolvedValue(null);
+    mockedPrisma.patient.create.mockResolvedValue({ id: 'new-patient' });
+
+    await PatientService.create('user-1', input);
+
+    expect(mockedPrisma.patient.create).toHaveBeenCalled();
   });
 });

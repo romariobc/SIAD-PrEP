@@ -28,7 +28,9 @@ export class PatientService {
   }
 
   static async create(userId: string, input: CreatePatientInput) {
-    const existing = await prisma.patient.findUnique({ where: { cpf: input.cpf } });
+    const existing = await prisma.patient.findFirst({
+      where: { cpf: input.cpf, deletedAt: null },
+    });
     if (existing) throw new AppError(409, 'CPF already registered');
 
     return prisma.patient.create({

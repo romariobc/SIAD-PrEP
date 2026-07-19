@@ -53,7 +53,7 @@ model User {
 model Patient {
   id           String    @id @default(uuid())
   userId       String    @unique
-  cpf          String    @unique
+  cpf          String // uniqueness enforced at app level among non-deleted rows (see PatientService.create)
   dateOfBirth  DateTime
   phone        String?
   address      String?
@@ -67,6 +67,7 @@ model Patient {
   appointments Appointment[]
   medications  Medication[]
 
+  @@index([cpf])
   @@map("patients")
 }
 
@@ -99,6 +100,9 @@ model Appointment {
   patient      Patient      @relation(fields: [patientId], references: [id])
   professional Professional @relation(fields: [professionalId], references: [id])
 
+  @@index([patientId])
+  @@index([professionalId])
+  @@index([scheduledAt])
   @@map("appointments")
 }
 
@@ -116,6 +120,7 @@ model Medication {
   patient   Patient    @relation(fields: [patientId], references: [id])
   dispenses Dispense[]
 
+  @@index([patientId])
   @@map("medications")
 }
 
@@ -127,5 +132,6 @@ model Dispense {
 
   medication Medication @relation(fields: [medicationId], references: [id])
 
+  @@index([medicationId])
   @@map("dispenses")
 }
