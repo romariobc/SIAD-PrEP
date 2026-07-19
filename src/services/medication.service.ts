@@ -1,5 +1,6 @@
 import { prisma } from '../database/client';
 import { AppError } from '../middlewares/error.middleware';
+import { AuthPayload } from '../middlewares/auth.middleware';
 
 interface CreateMedicationInput {
   patientId: string;
@@ -21,9 +22,15 @@ export class MedicationService {
     });
   }
 
-  static async getById(id: string) {
-    const medication = await prisma.medication.findUnique({ where: { id } });
+  static async getById(id: string, actor: AuthPayload) {
+    const medication = await prisma.medication.findUnique({
+      where: { id },
+      include: { patient: { select: { userId: true } } },
+    });
     if (!medication) throw new AppError(404, 'Medication record not found');
+    if (actor.role === 'PATIENT' && medication.patient.userId !== actor.sub) {
+      throw new AppError(404, 'Medication record not found');
+    }
     return medication;
   }
 
@@ -40,8 +47,8 @@ export class MedicationService {
     });
   }
 
-  static async dispense(medicationId: string, input: DispenseInput) {
-    await MedicationService.getById(medicationId);
+  static async dispense(medicationId: string, actor: AuthPayload, input: DispenseInput) {
+    await MedicationService.getById(medicationId, actor);
     return prisma.dispense.create({
       data: {
         medicationId,

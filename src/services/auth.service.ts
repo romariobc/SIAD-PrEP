@@ -8,7 +8,7 @@ interface RegisterInput {
   email: string;
   password: string;
   name: string;
-  role: 'PATIENT' | 'PROFESSIONAL' | 'ADMIN';
+  role: 'PATIENT' | 'PROFESSIONAL';
 }
 
 interface LoginInput {

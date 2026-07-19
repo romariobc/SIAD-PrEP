@@ -31,9 +31,22 @@ export class AppointmentService {
     });
   }
 
-  static async getById(id: string) {
-    const appointment = await prisma.appointment.findUnique({ where: { id } });
+  static async getById(id: string, actor: AuthPayload) {
+    const appointment = await prisma.appointment.findUnique({
+      where: { id },
+      include: {
+        patient: { select: { userId: true } },
+        professional: { select: { userId: true } },
+      },
+    });
     if (!appointment) throw new AppError(404, 'Appointment not found');
+
+    const isOwner =
+      actor.role === 'ADMIN' ||
+      (actor.role === 'PATIENT' && appointment.patient.userId === actor.sub) ||
+      (actor.role === 'PROFESSIONAL' && appointment.professional.userId === actor.sub);
+
+    if (!isOwner) throw new AppError(404, 'Appointment not found');
     return appointment;
   }
 
@@ -50,8 +63,8 @@ export class AppointmentService {
     });
   }
 
-  static async updateStatus(id: string, status: AppointmentStatus) {
-    await AppointmentService.getById(id);
+  static async updateStatus(id: string, actor: AuthPayload, status: AppointmentStatus) {
+    await AppointmentService.getById(id, actor);
     return prisma.appointment.update({ where: { id }, data: { status } });
   }
 }

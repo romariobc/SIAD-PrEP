@@ -1,5 +1,6 @@
 import { prisma } from '../database/client';
 import { AppError } from '../middlewares/error.middleware';
+import { AuthPayload } from '../middlewares/auth.middleware';
 
 interface CreatePatientInput {
   cpf: string;
@@ -17,9 +18,12 @@ export class PatientService {
     });
   }
 
-  static async getById(id: string) {
+  static async getById(id: string, actor: AuthPayload) {
     const patient = await prisma.patient.findFirst({ where: { id, deletedAt: null } });
     if (!patient) throw new AppError(404, 'Patient not found');
+    if (actor.role === 'PATIENT' && patient.userId !== actor.sub) {
+      throw new AppError(404, 'Patient not found');
+    }
     return patient;
   }
 
@@ -40,13 +44,13 @@ export class PatientService {
     });
   }
 
-  static async update(id: string, data: Partial<CreatePatientInput>) {
-    await PatientService.getById(id);
+  static async update(id: string, actor: AuthPayload, data: Partial<CreatePatientInput>) {
+    await PatientService.getById(id, actor);
     return prisma.patient.update({ where: { id }, data });
   }
 
-  static async softDelete(id: string) {
-    await PatientService.getById(id);
+  static async softDelete(id: string, actor: AuthPayload) {
+    await PatientService.getById(id, actor);
     await prisma.patient.update({ where: { id }, data: { deletedAt: new Date() } });
   }
 }
