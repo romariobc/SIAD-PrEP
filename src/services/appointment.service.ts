@@ -16,10 +16,10 @@ export class AppointmentService {
   static async list(user: AuthPayload) {
     const where =
       user.role === 'PATIENT'
-        ? { patient: { userId: user.sub } }
+        ? { patient: { userId: user.sub, deletedAt: null } }
         : user.role === 'PROFESSIONAL'
-          ? { professional: { userId: user.sub } }
-          : {};
+          ? { professional: { userId: user.sub }, patient: { deletedAt: null } }
+          : { patient: { deletedAt: null } };
 
     return prisma.appointment.findMany({
       where,
@@ -35,11 +35,13 @@ export class AppointmentService {
     const appointment = await prisma.appointment.findUnique({
       where: { id },
       include: {
-        patient: { select: { userId: true } },
+        patient: { select: { userId: true, deletedAt: true } },
         professional: { select: { userId: true } },
       },
     });
-    if (!appointment) throw new AppError(404, 'Appointment not found');
+    if (!appointment || appointment.patient.deletedAt) {
+      throw new AppError(404, 'Appointment not found');
+    }
 
     const isOwner =
       actor.role === 'ADMIN' ||
@@ -51,6 +53,16 @@ export class AppointmentService {
   }
 
   static async create(input: CreateAppointmentInput) {
+    const patient = await prisma.patient.findFirst({
+      where: { id: input.patientId, deletedAt: null },
+    });
+    if (!patient) throw new AppError(404, 'Patient not found');
+
+    const professional = await prisma.professional.findUnique({
+      where: { id: input.professionalId },
+    });
+    if (!professional) throw new AppError(404, 'Professional not found');
+
     return prisma.appointment.create({
       data: {
         patientId: input.patientId,

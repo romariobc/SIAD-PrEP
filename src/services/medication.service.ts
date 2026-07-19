@@ -18,6 +18,7 @@ interface DispenseInput {
 export class MedicationService {
   static async list() {
     return prisma.medication.findMany({
+      where: { patient: { deletedAt: null } },
       include: { patient: { include: { user: { select: { name: true } } } } },
     });
   }
@@ -25,9 +26,11 @@ export class MedicationService {
   static async getById(id: string, actor: AuthPayload) {
     const medication = await prisma.medication.findUnique({
       where: { id },
-      include: { patient: { select: { userId: true } } },
+      include: { patient: { select: { userId: true, deletedAt: true } } },
     });
-    if (!medication) throw new AppError(404, 'Medication record not found');
+    if (!medication || medication.patient.deletedAt) {
+      throw new AppError(404, 'Medication record not found');
+    }
     if (actor.role === 'PATIENT' && medication.patient.userId !== actor.sub) {
       throw new AppError(404, 'Medication record not found');
     }
@@ -35,6 +38,11 @@ export class MedicationService {
   }
 
   static async create(input: CreateMedicationInput) {
+    const patient = await prisma.patient.findFirst({
+      where: { id: input.patientId, deletedAt: null },
+    });
+    if (!patient) throw new AppError(404, 'Patient not found');
+
     return prisma.medication.create({
       data: {
         patientId: input.patientId,

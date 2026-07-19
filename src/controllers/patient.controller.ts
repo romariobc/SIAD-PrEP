@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { PatientService } from '../services/patient.service';
 
 export class PatientController {
-  static async list(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async list(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const patients = await PatientService.list();
       res.json(patients);

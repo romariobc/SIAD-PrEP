@@ -46,7 +46,20 @@ export class PatientService {
 
   static async update(id: string, actor: AuthPayload, data: Partial<CreatePatientInput>) {
     await PatientService.getById(id, actor);
-    return prisma.patient.update({ where: { id }, data });
+
+    const { dateOfBirth, consentGiven, ...rest } = data;
+
+    return prisma.patient.update({
+      where: { id },
+      data: {
+        ...rest,
+        ...(dateOfBirth && { dateOfBirth: new Date(dateOfBirth) }),
+        ...(consentGiven !== undefined && {
+          consentGiven,
+          consentDate: consentGiven ? new Date() : null,
+        }),
+      },
+    });
   }
 
   static async softDelete(id: string, actor: AuthPayload) {
