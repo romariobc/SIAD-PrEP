@@ -13,7 +13,8 @@ export class AppointmentController {
 
   static async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const appointment = await AppointmentService.getById(req.params.id);
+      const id = req.params.id as string;
+      const appointment = await AppointmentService.getById(id);
       res.json(appointment);
     } catch (err) {
       next(err);
@@ -31,7 +32,8 @@ export class AppointmentController {
 
   static async cancel(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const appointment = await AppointmentService.updateStatus(req.params.id, 'CANCELLED');
+      const id = req.params.id as string;
+      const appointment = await AppointmentService.updateStatus(id, 'CANCELLED');
       res.json(appointment);
     } catch (err) {
       next(err);
@@ -40,7 +42,8 @@ export class AppointmentController {
 
   static async complete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const appointment = await AppointmentService.updateStatus(req.params.id, 'COMPLETED');
+      const id = req.params.id as string;
+      const appointment = await AppointmentService.updateStatus(id, 'COMPLETED');
       res.json(appointment);
     } catch (err) {
       next(err);

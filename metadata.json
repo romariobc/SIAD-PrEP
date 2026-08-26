@@ -1,0 +1,6 @@
+{
+  "name": "SIAD-PrEP",
+  "description": "Sistema Informatizado de Apoio à Decisão para Profilaxia Pré-Exposição ao HIV (PrEP)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
